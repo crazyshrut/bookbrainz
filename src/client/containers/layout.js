@@ -44,14 +44,19 @@ const {Alert, Button, Form, FormControl, InputGroup, Nav, Navbar, NavDropdown} =
 class Layout extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {keepMenuOpen: false, menuOpen: false};
+		this.state = {darkMode: false, keepMenuOpen: false, menuOpen: false};
 		this.renderNavContent = this.renderNavContent.bind(this);
 		this.renderNavHeader = this.renderNavHeader.bind(this);
 		this.renderDocsDropdown = this.renderDocsDropdown.bind(this);
 		this.handleDropdownToggle = this.handleDropdownToggle.bind(this);
+		this.handleDarkMode = this.handleDarkMode.bind(this);
 		this.handleDropdownClick = this.handleDropdownClick.bind(this);
 		this.handleMouseDown = this.handleMouseDown.bind(this);
 	}
+
+	handleDarkMode = () => {
+		this.setState(prevState => ({darkMode: !prevState.darkMode}));
+	};
 
 	handleMouseDown(event) {
 		event.preventDefault();
@@ -340,6 +345,15 @@ class Layout extends React.Component {
 		return (
 			<Navbar.Collapse id="bs-example-navbar-collapse-1">
 				{!(homepage || hideSearch) && this.renderSearchForm()}
+
+				<Nav>
+					<Nav.Item onClick={this.handleDarkMode}>
+						<Nav.Link>
+							<FontAwesomeIcon icon={this.state.darkMode ? faSun : faMoon}/>
+						</Nav.Link>
+					</Nav.Item>
+				</Nav>
+
 				<Nav className={revisionsClassName}>
 					<Nav.Item>
 						<Nav.Link href="/revisions">
@@ -420,7 +434,7 @@ class Layout extends React.Component {
 				<a className="sr-only sr-only-focusable" href="#content">
 					Skip to main content
 				</a>
-				<Navbar className="BookBrainz" expand="lg" fixed="top" role="navigation">
+				<Navbar className={`BookBrainz ${this.state.darkMode ? 'dark-mode' : ''}`} expand="lg" fixed="top" role="navigation">
 					{this.renderNavHeader()}
 					<Navbar.Toggle/>
 					{this.renderNavContent()}
@@ -428,6 +442,8 @@ class Layout extends React.Component {
 				{alerts}
 				{childNode}
 				<Footer
+
+					darkMode={this.state.darkMode}
 					repositoryUrl={repositoryUrl}
 					siteRevision={siteRevision}
 				/>
